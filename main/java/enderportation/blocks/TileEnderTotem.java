@@ -18,16 +18,16 @@ public class TileEnderTotem extends TileEntity {
 
 	@Override
 	public Packet getDescriptionPacket() {
-		/*NBTTagCompound tag = new NBTTagCompound();
+		NBTTagCompound tag = new NBTTagCompound();
 		this.writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);*/
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
 		
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEnderTotem(this));
+		//return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEnderTotem(this));
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
-		//readFromNBT(packet.func_148857_g());
+		readFromNBT(packet.func_148857_g());
 	}
 
 	public void readFromNBT(NBTTagCompound tagCompound) {

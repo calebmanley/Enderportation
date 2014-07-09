@@ -42,26 +42,8 @@ public class BlockEnderTotem extends Block implements ITileEntityProvider {
 
 		if (entity != null && totem != null) {
 			totem.setOwnerUUID("");
+			world.markBlockForUpdate(x, y, z);
 		}
-
-		/*TileEnderTotem totem = (TileEnderTotem) world.getTileEntity(x, y, z);
-
-		if (entity != null && totem != null) {
-			totem.setOwnerUUID(entity.getUniqueID().toString());
-
-			PlayerTotems props = PlayerTotems.get((EntityPlayer)entity);
-
-			if (props.canUseColour(0)) {
-				props.createTotem(0, x, y, z);
-			} else {
-				if (world.isRemote) {
-					((EntityPlayer)entity).addChatComponentMessage(new ChatComponentText("You cannot create another totem of that colour."));
-				}
-
-				world.setBlockToAir(x, y, z);
-				world.removeTileEntity(x, y, z);
-			}
-		}*/
 	}
 
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
@@ -103,7 +85,7 @@ public class BlockEnderTotem extends Block implements ITileEntityProvider {
 					else player.addChatComponentMessage(new ChatComponentText("Unclaimed."));
 				}
 			} else {
-				/*if (totem.isOwner(player) || totem.getColour() == 16) {
+				if (totem.isOwner(player) || totem.getColour() == 16) {
 					if (player.getHeldItem() != null) {
 						ItemStack held = player.getHeldItem();
 						PlayerTotems props = PlayerTotems.get(player);
@@ -116,45 +98,9 @@ public class BlockEnderTotem extends Block implements ITileEntityProvider {
 								totem.setColour(held.getItemDamage());
 								totem.setOwnerUUID(player.getUniqueID().toString());
 
-								world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
+								world.markBlockForUpdate(x, y, z);
+								totem.markDirty();
 								held.stackSize--;
-							}
-						}
-					}
-				}*/
-				
-				if (totem.isOwner(player)) {
-					if (player.getHeldItem() != null) {
-						if (player.getHeldItem().getItem() == Items.dye) {
-							PlayerTotems props = PlayerTotems.get(player);
-							
-							if (props.canUseColour(player.getHeldItem().getItemDamage())) {
-								props.removeTotem(x, y, z);
-
-								props.createTotem(player.getHeldItem().getItemDamage(), x, y, z);
-								totem.setColour(player.getHeldItem().getItemDamage());
-								totem.setOwnerUUID(player.getUniqueID().toString());
-
-								//world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
-								world.markBlockForUpdate(x, y, z);
-								player.getHeldItem().stackSize--;
-							}
-						}
-					}
-				}
-				
-				if (totem.getColour() == 16) {
-					if (player.getHeldItem() != null) {
-						if (player.getHeldItem().getItem() == Items.dye) {
-							PlayerTotems props = PlayerTotems.get(player);
-							
-							if (props.canUseColour(player.getHeldItem().getItemDamage())) {
-								props.createTotem(player.getHeldItem().getItemDamage(), x, y, z);
-								totem.setColour(player.getHeldItem().getItemDamage());
-								totem.setOwnerUUID(player.getUniqueID().toString());
-
-								world.markBlockForUpdate(x, y, z);
-								player.getHeldItem().stackSize--;
 							}
 						}
 					}
@@ -184,13 +130,6 @@ public class BlockEnderTotem extends Block implements ITileEntityProvider {
 		this.topOverlay = iconRegister.registerIcon("ep:totemTopOverlay");
 		this.sideOverlay = iconRegister.registerIcon("ep:totemSideOverlay");
 	}
-	
-	@Override
-    public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int eventData) {
-        super.onBlockEventReceived(world, x, y, z, eventId, eventData);
-        TileEntity tileentity = world.getTileEntity(x, y, z);
-        return tileentity != null ? tileentity.receiveClientEvent(eventId, eventData) : false;
-    }
 
 	public boolean renderAsNormalBlock() {
 		return false;
